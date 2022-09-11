@@ -1,0 +1,951 @@
+---
+title: "ML Exam srt2578"
+author: "Sai Bhargav"
+date: '2022-07-18'
+output: pdf_document
+---
+
+# Ch 2 Prob 10
+
+## Part a
+
+```{r echo=FALSE}
+library(ISLR2)
+?Boston
+dim(Boston)
+head(Boston)
+```
+
+The Boston dataset has 506 rows and 13 variables. For each suburb of Boston we have stats like crime rate, tax rates, median value of homes etc.
+
+## Part b
+
+```{r echo=FALSE}
+attach(Boston)
+pairs(Boston)
+```
+
+-   There seems to be a correlation between lstat and medv.
+-   Crime rate also seems to go down as the 'dis' i.e., the mean distance from the Boston employment centres increase.
+-   The levels of nitrogen oxide also are decreasing as dis increases, i.e, as we go away from Boston employment centres
+
+## Part c
+
+Variables and Correlation with *crim*
+
+```{r echo=FALSE}
+crim_correlation <- cor(Boston[,colnames(Boston) != "crim"],crim)
+crim_correlation
+```
+
+Out of all the variables *chas* has the least correlation (in terms of value) and *rad* has the highest correlation with *crim*
+
+## Part d
+
+```{r echo=FALSE}
+summary(crim)
+```
+
+*crim* Most of the distribution is in the lower regions based on the 3rd Quantile value. But a handful of the towns have enormously high crime rate based on the fact that Max. value is in another level compared to other values
+
+```{r echo=FALSE}
+summary(tax)
+```
+
+*tax* Tax rate seems to have the values distributed across different ranges
+
+```{r echo=FALSE}
+summary(ptratio)
+```
+
+*ptratio* Pupil to teacher ratio seems to have more values between the 3rd quantile and max. value considering the jump between Min. and 1st Quantile values but the mean being almost equally distant from 1st and 3rd quantiles
+
+## Part e
+
+```{r echo=FALSE}
+n = sum(chas)
+n
+```
+
+35 suburbs bound Charles river
+
+## Part f
+
+```{r echo=FALSE}
+median(ptratio)
+```
+
+Median ptratio is 19.05
+
+## Part g
+
+```{r echo=FALSE}
+Boston[medv == min(medv),]
+```
+
+Observation 399 and 406 have the lowest *medv* value. For Observation 399 and 406 as both have similar values across all variables:
+
+-   The crime rate is high compared to most of the observations
+-   *zn* is too low as mean zn is at 11.36
+-   *indus* is on the higher side compared to the data
+-   The two observations are part of many which do not bound Charles River
+-   Nitrogen Oxide concentration is on the higher side compared to data
+-   *rm* is on the lower side compared to data
+-   The two observations have the highest 'age' values. This makes sense as all the buildings are built prior to 1940 their values are low resulting in the least medv
+-   The distance for these two observations are on the lower side. So, they are closer to Boston employment centres compared to most of the observations
+-   These observations have the highest 'rad' values along with almost a quarter of the other observations as 3rd quartile and max. 'rad' values are same
+-   Tax rate is on the higher side compared to the data
+-   *ptratio* is more than that of the three-fourth of the observations
+-   For Observation 399 *lstat* is on the higher side where as for Observation 406 it is almost close to the median value
+
+## Part h
+
+```{r echo=FALSE}
+nrow(Boston[rm > 7,])
+```
+
+64 observations have more than 7 average rooms per dwelling
+
+```{r echo=FALSE}
+nrow(Boston[rm > 8,])
+Boston[rm > 8,]
+summary(Boston[rm > 8,])
+```
+
+-   13 observations have more than 8 average rooms per dwelling
+-   The mean value of medv for the observations with average dwellings is on the higher side compared to the overall Boston data. This makes sense as the number of rooms is usually directly proportional to the value of the house.
+
+# Ch 3 Prob 15
+
+## Part a
+
+```{r echo=FALSE}
+library(ISLR2)
+#length(colnames(Boston))
+attach(Boston)
+zn_lm.fit = lm(crim~zn)
+summary(zn_lm.fit)
+plot(zn,crim)
+abline(zn_lm.fit)
+```
+
+The *P-value* for *crim\~zn* model is very low, which implies that there is a relationship between *crim* and *zn*.However, the low R square value implies a that these two variables do not have a linear relationship.
+
+```{r echo=FALSE}
+indus_lm.fit = lm(crim~indus)
+summary(indus_lm.fit)
+plot(indus,crim)
+abline(indus_lm.fit)
+```
+
+The *P-value* for *crim\~indus* model is very low, which implies that there is a relationship between *crim* and *indus*.Also, the R square value implies a that these two variables do have more of a linear relationship compared to the previous model, but still not very close to linear.
+
+```{r echo=FALSE}
+chas_lm.fit = lm(crim~chas)
+summary(chas_lm.fit)
+plot(chas,crim)
+abline(chas_lm.fit)
+```
+
+The *P-value* for *crim\~chas* model is **0.209**, which implies that there is no relationship between *crim* and *chas*.Also, this can be confirmed with the very low R square value which is close to 0.
+
+```{r echo=FALSE}
+nox_lm.fit = lm(crim~nox)
+summary(nox_lm.fit)
+plot(nox,crim)
+abline(nox_lm.fit)
+```
+
+The *P-value* for *crim\~nox* model is low which implies that there is a relationship between *crim* and *nox*.Also, this can be confirmed with the relatively moderate R square value of **0.1722**
+
+```{r echo=FALSE}
+rm_lm.fit = lm(crim~rm)
+summary(rm_lm.fit)
+plot(rm,crim)
+abline(rm_lm.fit)
+```
+
+The *P-value* for *crim\~rm* model is low which implies that there is a relationship between *crim* and *rm*.But, this relationship is not significant based on the very low R square value.
+
+```{r echo=FALSE}
+age_lm.fit = lm(crim~age)
+summary(age_lm.fit)
+plot(age,crim)
+abline(age_lm.fit)
+```
+
+The *P-value* for *crim\~age* model is low which implies that there is a relationship between *crim* and *age*. But, this relationship is significant based on the moderate R square value.
+
+```{r echo=FALSE}
+dis_lm.fit = lm(crim~dis)
+summary(dis_lm.fit)
+plot(dis,crim)
+abline(dis_lm.fit)
+```
+
+The *P-value* for *crim\~dis* model is low which implies that there is a relationship between *crim* and *dis*. But, this relationship is not significant based on the moderate R square value.
+
+```{r echo=FALSE}
+rad_lm.fit = lm(crim~rad)
+summary(rad_lm.fit)
+plot(rad,crim)
+abline(rad_lm.fit)
+```
+
+The *P-value* for *crim\~rad* model is low which implies that there is a relationship between *crim* and *rad*. Also, this relationship is significant based on the R square value.
+
+```{r echo=FALSE}
+tax_lm.fit = lm(crim~tax)
+summary(tax_lm.fit)
+plot(tax,crim)
+abline(tax_lm.fit)
+```
+
+The *P-value* for *crim\~tax* model is low which implies that there is a relationship between *crim* and *tax*. Also, this relationship is significant based on the R square value.
+
+```{r echo=FALSE}
+ptratio_lm.fit = lm(crim~ptratio)
+summary(ptratio_lm.fit)
+plot(ptratio,crim)
+abline(ptratio_lm.fit)
+```
+
+The *P-value* for *crim\~ptratio* model is low which implies that there is a relationship between *crim* and *ptratio*. But, this relationship is not significant based on the low R square value.
+
+```{r echo=FALSE}
+lstat_lm.fit = lm(crim~lstat)
+summary(lstat_lm.fit)
+plot(lstat,crim)
+abline(lstat_lm.fit)
+```
+
+The *P-value* for *crim\~lstat* model is low which implies that there is a relationship between *crim* and *lstat*. Also, this relationship is significant based on the moderate R square value of **0.2**
+
+```{r echo=FALSE}
+medv_lm.fit = lm(crim~medv)
+summary(medv_lm.fit)
+plot(medv,crim)
+abline(medv_lm.fit)
+```
+
+The *P-value* for *crim\~medv* model is low which implies that there is a relationship between *crim* and *medv*. But, this relationship is not significant based on the low R square value.
+
+## Part b
+
+```{r echo=FALSE}
+mrlm.fit = lm(crim ~ ., data = Boston)
+summary(mrlm.fit)
+```
+
+The variables *zn*,*dis* and *medv* have low p values which makes them the most significant predictors of *crim*. For these variables the null hypothesis can be rejected. The R square value is at \*\*0.4493\* which makes this model more significant than any we have seen with individual predictors. But this is not sufficient enough to say that the multiple regression fits this dataset.
+
+## Part c
+
+```{r echo=FALSE}
+m = matrix(data = NA, nrow = 12, ncol = 2)
+m[1,1] = zn_lm.fit$coefficients[2]
+m[2,1] = indus_lm.fit$coefficients[2]
+m[3,1] = chas_lm.fit$coefficients[2]
+m[4,1] = nox_lm.fit$coefficients[2]
+m[5,1] = rm_lm.fit$coefficients[2]
+m[6,1] = age_lm.fit$coefficients[2]
+m[7,1] = dis_lm.fit$coefficients[2]
+m[8,1] = rad_lm.fit$coefficients[2]
+m[9,1] = tax_lm.fit$coefficients[2]
+m[10,1] = ptratio_lm.fit$coefficients[2]
+m[11,1] = lstat_lm.fit$coefficients[2]
+m[12,1] = medv_lm.fit$coefficients[2]
+m[,2] = mrlm.fit$coefficients[2:13]
+m = as.data.frame(m)
+colnames(m) = c("Univariate Regression Coefficients","Multiple Regression Coefficients")
+plot(m$`Univariate Regression Coefficients`,m$`Multiple Regression Coefficients`, xlab = "Univariate Regression Coefficients", ylab = "Multiple Regression Coefficients")
+```
+
+The coefficients in part(a) and part(b) are completely different for each of the predictors. This might be because, in part(a) each predictor is individually considered but in part(b) the effect of all the predictors are taken into consideration which eliminates the possibility of attributing the change in estimated value with any one variable.
+
+## Part d
+
+```{r echo=FALSE}
+zn_poly = lm(crim ~ poly(zn,3))
+summary(zn_poly)
+
+indus_poly = lm(crim ~ poly(indus,3))
+summary(indus_poly)
+
+chas_poly = lm(crim ~ chas+I(chas^2)+I(chas^3))
+summary(chas_poly)
+
+nox_poly = lm(crim ~ poly(nox,3))
+summary(nox_poly)
+
+rm_poly = lm(crim ~ poly(rm,3))
+summary(rm_poly)
+
+age_poly = lm(crim ~ poly(age,3))
+summary(age_poly)
+
+dis_poly = lm(crim ~ poly(dis,3))
+summary(dis_poly)
+
+rad_poly = lm(crim ~ poly(rad,3))
+summary(rad_poly)
+
+tax_poly = lm(crim ~ poly(tax,3))
+summary(tax_poly)
+
+ptratio_poly = lm(crim ~ poly(ptratio,3))
+summary(ptratio_poly)
+
+lstat_poly = lm(crim ~ poly(lstat,3))
+summary(lstat_poly)
+
+medv_poly = lm(crim ~ poly(medv,3))
+summary(medv_poly)
+```
+
+-   *zn*: quadratic relation is significant but not the cubic relation
+-   *indus*: quadratic and cubic relations are significant
+-   *chas*: the quadratic and cubic relations are not applicable
+-   *nox*: quadratic and cubic relations are significant
+-   *rm*: quadratic relation is significant but not the cubic relation
+-   *age*: quadratic and cubic relations are significant
+-   *dis*: quadratic and cubic relations are significant
+-   *rad*: quadratic relation is significant but not the cubic relation
+-   *tax*: quadratic relation is significant but not the cubic relation
+-   *ptratio*: quadratic and cubic relations are significant
+-   *lstat*: quadratic relation is significant but not the cubic relation
+-   *medv*: quadratic and cubic relations are significant
+
+# Ch 6 Prob 9
+
+## Part a
+
+```{r echo=FALSE}
+library(ISLR2)
+dim(College)
+set.seed(100)
+MSE_matrix = matrix(data = NA, nrow = 5, ncol = 2)
+n = sample(1:nrow(College),round(0.75*nrow(College)))
+College.train = College[n,]
+College.test = College[-n,]
+print(dim(College.train))
+print(dim(College.test))
+```
+
+The College dataset has been split into training and testing datasets with 593 rows in training and 194 rows in testing datasets.
+
+## Part b
+
+```{r echo=FALSE}
+set.seed(100)
+lm_College = lm(College.train$Apps ~ ., data = College.train)
+summary(lm_College)
+lm_prediction = predict(lm_College, newdata = College.test)
+lm_testMSE = mean((lm_prediction-College.test$Apps)^2)
+print(lm_testMSE)
+MSE_matrix[1,1] = 'Linear Model'
+MSE_matrix[1,2] = lm_testMSE
+```
+
+With Multiple linear regression we get a test MSE of **950173.1**.
+
+## Part c
+
+```{r echo=FALSE}
+library(glmnet)
+set.seed(100)
+grid = 10^seq(10, -2, length = 100)
+x = model.matrix(Apps ~ . , College)[,-1]
+y = College$Apps
+y.test = y[-n]
+ridge.mod = glmnet(x[n, ], y[n], alpha = 0, lambda = grid, thresh = 1e-12)
+ridge_College_cv = cv.glmnet(x[n, ], y[n], alpha = 0)
+plot(ridge_College_cv)
+bestlam = ridge_College_cv$lambda.min
+cat('Best lambda is ',bestlam,'\n')
+ridge.predict = predict(ridge.mod, s = bestlam, newx = x[-n, ])
+ridge_MSE = mean((ridge.predict - y.test)^2)
+print(ridge_MSE)
+MSE_matrix[2,1] = 'Ridge Regression'
+MSE_matrix[2,2] = ridge_MSE
+
+```
+
+With Ridge regression at the *lamba* value of **362.33** we get a test MSE of **789806.1**.
+
+```{r echo=FALSE}
+set.seed(100)
+out = glmnet(x, y, alpha = 0, lambda = grid)
+ridge.coef = predict(out, type = "coefficients", s = bestlam)[1:18, ]
+ridge.coef
+```
+
+## Part d
+
+```{r echo=FALSE}
+library(glmnet)
+set.seed(100)
+#grid = 10^seq(10, -2, length = 100)
+#x = model.matrix(Apps ~ . , College)[,-1]
+#y = College$Apps
+#y.test = y[-n]
+lasso.mod = glmnet(x[n, ], y[n], alpha = 1, lambda = grid)
+#plot(lasso.mod)
+lasso_College_cv = cv.glmnet(x[n, ], y[n], alpha = 1)
+plot(lasso_College_cv)
+bestlam_lasso = lasso_College_cv$lambda.min
+cat('Best lambda is ',bestlam_lasso,'\n')
+lasso.predict = predict(lasso.mod, s = bestlam_lasso, newx = x[-n, ])
+lasso_MSE = mean((lasso.predict - y.test)^2)
+print(lasso_MSE)
+MSE_matrix[3,1] = 'Lasso Model'
+MSE_matrix[3,2] = lasso_MSE
+```
+
+With Lasso regression at the *lamba* value of **14.97** we get a test MSE of **891897.7** which is close to the test MSE we got for the Ridge Regression.
+
+```{r echo=FALSE}
+set.seed(100)
+out = glmnet(x, y, alpha = 1, lambda = grid)
+lasso.coef = predict(out, type = "coefficients", s = bestlam_lasso)[1:18, ]
+lasso.coef
+```
+
+*F.Undergrad* and *Books* coefficients have been reduced to 0 for *lambda* at it's best value.
+
+## Part e
+
+```{r echo=FALSE}
+library(pls)
+set.seed(100)
+pcr.fit_initial = pcr(Apps ~ ., data = College, scale = TRUE, validation = "CV")
+summary(pcr.fit_initial)
+validationplot(pcr.fit_initial, val.type = "MSEP")
+pcr.fit = pcr(Apps ~ ., data = College, subset = n, scale = TRUE, validation = "CV")
+pcr.pred = predict(pcr.fit, x[-n, ], ncomp = 9)
+pcr_MSE = mean((pcr.pred - y.test)^2)
+print(pcr_MSE)
+MSE_matrix[4,1] = 'PCR Model'
+MSE_matrix[4,2] = pcr_MSE
+```
+
+With PCR model, we got a test MSE of **1263789** with the value of M (number of components) at **9**.
+
+## Part f
+
+```{r echo=FALSE}
+set.seed(100)
+pls.fit_initial = plsr(Apps ~ ., data = College,scale = TRUE, validation = "CV") 
+summary(pls.fit_initial)
+validationplot(pls.fit_initial, val.type = "MSEP")
+pls.fit = plsr(Apps ~ ., data = College, subset = n, scale = TRUE, validation = "CV")
+pls.pred = predict(pls.fit, x[-n, ], ncomp = 7)
+pls_MSE = mean((pls.pred - y.test)^2)
+print(pls_MSE)
+MSE_matrix[5,1] = 'PLS Model'
+MSE_matrix[5,2] = pls_MSE
+```
+
+With PLS model, we got a test MSE of **992767.7** with the value of M (number of components) at **7**.
+
+## Part g
+
+```{r echo=FALSE}
+set.seed(100)
+MSE_matrix = as.data.frame(MSE_matrix)
+colnames(MSE_matrix) = c('Model','Test MSE')
+MSE_matrix
+```
+
+*Ridge Regression* has lowest error among the tested models. The test MSEs in all the models except PCR model are close to each other.
+
+# Ch 6 Prob 11
+
+## Part a
+
+```{r echo=FALSE}
+library(ISLR2)
+dim(Boston)
+set.seed(5)
+MSE_matrix_Boston = matrix(data = NA, nrow = 4, ncol = 2)
+n = sample(1:nrow(Boston),round(0.75*nrow(Boston)))
+Boston.train = Boston[n,]
+Boston.test = Boston[-n,]
+print(dim(Boston.train))
+print(dim(Boston.test))
+```
+
+The Boston dataset has been divided into training and testing datasets with 380 rows in training and 126 rows in testing.
+
+```{r echo=FALSE}
+library(leaps)
+set.seed(5)
+regfit.best = regsubsets(crim ~ ., data = Boston.train, nvmax = 12)
+test.mat = model.matrix(crim ~ ., data = Boston.test)
+val.errors = rep(NA, 12)
+for (i in 1:12){
+  coefi = coef(regfit.best, id = i)
+  pred = test.mat[, names(coefi)] %*% coefi
+  val.errors[i] = mean((Boston.test$crim - pred)^2)
+}
+print('The list of test MSEs for each value of no.of components selected starting from 1 to 12\n')
+print(val.errors)
+print(min(val.errors))
+no.of_comp = which.min(val.errors)
+print(no.of_comp)
+coef(regfit.best, no.of_comp)
+MSE_matrix_Boston[1,1] = 'Best subset selection'
+MSE_matrix_Boston[1,2] = min(val.errors)
+```
+
+With *Best subset selection* we noticed that with 2 components selection we are getting min. test MSE of **12.15**. And, the variables which have non-zero coefficients are *rad* and *lstat*.
+
+```{r echo=FALSE}
+library(glmnet)
+set.seed(5)
+grid = 10^seq(10, -2, length = 100)
+x = model.matrix(crim ~ . , Boston)[,-1]
+y = Boston$crim
+y.test = y[-n]
+ridge.mod = glmnet(x[n, ], y[n], alpha = 0, lambda = grid, thresh = 1e-12)
+ridge_Boston_cv = cv.glmnet(x[n, ], y[n], alpha = 0)
+plot(ridge_Boston_cv, main = 'Ridge Regression')
+bestlam = ridge_Boston_cv$lambda.min
+cat('Best lambda is ',bestlam,'\n')
+ridge.predict = predict(ridge.mod, s = bestlam, newx = x[-n, ])
+ridge_MSE = mean((ridge.predict - y.test)^2)
+print(ridge_MSE)
+MSE_matrix_Boston[2,1] = 'Ridge Regression'
+MSE_matrix_Boston[2,2] = ridge_MSE
+
+```
+
+For *Ridge Regression* we get a test MSE of **11.754** with the *lambda* at **0.58**
+
+```{r echo=FALSE}
+library(glmnet)
+set.seed(5)
+lasso.mod = glmnet(x[n, ], y[n], alpha = 1, lambda = grid)
+
+lasso_Boston_cv = cv.glmnet(x[n, ], y[n], alpha = 1)
+plot(lasso_Boston_cv, main = "Lasso Model")
+bestlam_lasso_Boston = lasso_Boston_cv$lambda.min
+cat('Best lambda is ',bestlam_lasso_Boston,'\n')
+lasso.predict = predict(lasso.mod, s = bestlam_lasso, newx = x[-n, ])
+lasso_MSE = mean((lasso.predict - y.test)^2)
+print(lasso_MSE)
+MSE_matrix_Boston[3,1] = 'Lasso Model'
+MSE_matrix_Boston[3,2] = lasso_MSE
+
+set.seed(5)
+out = glmnet(x, y, alpha = 1, lambda = grid)
+lasso.coef = predict(out, type = "coefficients", s = bestlam_lasso_Boston)[1:12, ]
+lasso.coef
+```
+
+For *Lasso model* we get a test MSE of **28.52** with the *lambda* at **0.06**. Only *age* and *tax* coefficients have been made 0.
+
+```{r echo=FALSE}
+library(pls)
+set.seed(5)
+pcr.fit_initial = pcr(crim ~ ., data = Boston, scale = TRUE, validation = "CV")
+summary(pcr.fit_initial)
+validationplot(pcr.fit_initial, val.type = "MSEP")
+pcr.fit = pcr(crim ~ ., data = Boston, subset = n, scale = TRUE, validation = "CV")
+pcr.pred = predict(pcr.fit, x[-n, ], ncomp = 10)
+pcr_MSE = mean((pcr.pred - y.test)^2)
+print(pcr_MSE)
+MSE_matrix_Boston[4,1] = 'PCR Model'
+MSE_matrix_Boston[4,2] = pcr_MSE
+```
+
+For the *PCR model* we have checked the relation between number of components and MSEP(mean squared error of prediction) and decided number of components to be **10**. With that, the test MSE obtained is **12.76**.
+
+## Part b
+
+```{r echo=FALSE}
+MSE_matrix_Boston = as.data.frame(MSE_matrix_Boston)
+colnames(MSE_matrix_Boston) = c('Model','testMSE')
+print(MSE_matrix_Boston)
+```
+
+For each of the models testing set or validation set has been used. Using the test MSEs from each of these models as shown above, we can conclude that *Best subset selection*, *Ridge Regression* and *PCR Model* can be used for the Boston dataset. One of these three can be used, considering the close test MSEs these models have given.
+
+## Part c
+
+Out of the 4 models used, *Ridge Regression* has the lowest MSE. All the features will be used in Ridge regression because the coefficients are decided by minimizing the squared errors plus the sum of squared coefficients multiplied with a *lambda*. The square property doesn't allow the coefficients to go to 0. Hence, in the final equation for f(x), all the x's will have a non-zero coefficient.
+
+# Ch 8 Prob 8
+
+## Part a
+
+```{r echo=FALSE}
+library(tree)
+library(ISLR2)
+attach(Carseats)
+
+set.seed(2)
+n = sample(1:nrow(Carseats),round(0.75*nrow(Carseats)))
+Carseats.train = Carseats[n,]
+Carseats.test = Carseats[-n,]
+nrow(Carseats.train)
+nrow(Carseats.test)
+```
+
+Created a training and a test data set with 75% of the total data for training and 25% for testing. That is,**300** rows of data for training and **100** rows for testing.
+
+## Part b
+
+```{r echo=FALSE}
+set.seed(2)
+tree.Carseats = tree(Sales ~ ., Carseats, subset = n,mindev = 0.01)
+summary(tree.Carseats)
+plot(tree.Carseats)
+text(tree.Carseats,pretty = 1)
+test.Carseats = predict(tree.Carseats, newdata = Carseats.test)
+complex_MSE = mean((test.Carseats-Carseats.test$Sales)^2)
+complex_MSE
+tn = length((unique(tree.Carseats$where)))
+```
+
+A tree with *mindev* of 0.01 has been created and tested on the test data set. The test MSE obtained is **4.224**. We can observe from the plot between size and deviance from that at tree size of **5** itself we get the best result.
+
+## Part c
+
+```{r echo=FALSE}
+set.seed(2)
+cv.Carseats = cv.tree(tree.Carseats)
+plot(cv.Carseats)
+prune.Carseats = prune.tree(tree.Carseats,best = 5)
+#v = which(MSE_list == min(MSE_list[,2])) - length(MSE_list[,1])
+#best = MSE_list[v]
+plot(prune.Carseats)
+text(prune.Carseats,pretty = 1)
+test.prune_Carseats = predict(prune.Carseats, newdata = Carseats.test)
+cat(mean((test.prune_Carseats-Carseats.test$Sales)^2),' for 5 terminal nodes\n')
+
+prune.Carseats = prune.tree(tree.Carseats,best = 14)
+#v = which(MSE_list == min(MSE_list[,2])) - length(MSE_list[,1])
+#best = MSE_list[v]
+plot(prune.Carseats)
+text(prune.Carseats,pretty = 1)
+test.prune_Carseats = predict(prune.Carseats, newdata = Carseats.test)
+cat(mean((test.prune_Carseats-Carseats.test$Sales)^2),' for 14 terminal nodes')
+
+```
+
+By cross-validating we see that we don't need 18 terminal nodes. From the plot between deviance and size we can observe that at **5** and **14** terminal nodes there is a dip in the deviance. Hence, the complex tree has been pruned to 5 and 14 which gave the test MSEs **4.633** and **4.067** respectively. For 6 terminal nodes we get a slightly higher MSE but we can see that the tree is pretty simple hence easily interpretable. For 14 terminal nodes we are getting lower test MSE than the previous complex tree of 18 terminal nodes. But we can observe that the tree is slightly more complicated hence compromising on the interpretability.
+
+## Part d
+
+```{r echo=FALSE}
+library(randomForest)
+set.seed(2)
+
+bag.Carseats = randomForest(Sales~., data = Carseats, subset = n, mtry = ncol(Carseats) - 1,importance = TRUE)
+bag.Carseats
+bagtest.Carseats = predict(bag.Carseats, newdata = Carseats.test)
+bagging_testMSE = mean((bagtest.Carseats-Carseats.test$Sales)^2)
+(bagging_testMSE)
+```
+
+With bagging (m = no.of columns in *Carseats* dataset - 1), the test MSE has significantly reduced to **2.091** as compared to the best result of **4.067** test MSE in the pruning regression tree method.
+
+```{r echo=FALSE}
+importance(bag.Carseats)
+varImpPlot(bag.Carseats)
+```
+
+Based on the output of the *importance()* function and the *%IncMSE* and *IncNodePurity* plots we can conclude that the **Price** of the Carseats, **ShelveLoc** i.e., the quality of the shelving location are the most important variables with the **CompPrice** i.e., competitor price having some limited effect.
+
+## Part e
+
+```{r echo=FALSE}
+set.seed(2)
+rf_testMSE_list = matrix(data = NA, nrow = ncol(Carseats)-1, ncol = 2)
+i = 2
+for (i in 1:10){
+rf.Carseats = randomForest(Sales~., data = Carseats, subset = n,mtry = i,importance = TRUE)
+rftest.Carseats = predict(rf.Carseats, newdata = Carseats.test)
+rf_testMSE = mean((rftest.Carseats-Carseats.test$Sales)^2)
+rf_testMSE_list[i,1] = i
+rf_testMSE_list[i,2] = rf_testMSE
+}
+rf_testMSE_list = data.frame(rf_testMSE_list)
+colnames(rf_testMSE_list) = c('m','testMSE')
+rf_testMSE_list
+plot(rf_testMSE_list$m,rf_testMSE_list$testMSE, xlab = 'm value', ylab = 'test MSE')
+```
+
+For Random forests the test MSE reduced even furthur to **2.0691** at *m* value of **7**. As we will see from the importance() function 7 variables have significant effect on the sales.
+
+```{r echo=FALSE}
+importance(rf.Carseats)
+varImpPlot(rf.Carseats)
+```
+
+As seen above **Price**, **ShelveLoc** and **CompPrice** are the most important variables.
+
+## Part f
+
+```{r echo=FALSE}
+library(BART)
+set.seed(2)
+x = Carseats[,2:11]
+y = Carseats[,"Sales"]
+xtrain = x[n,]
+ytrain = y[n]
+xtest = x[-n,]
+ytest = y[-n]
+bartfit = gbart(xtrain, ytrain, x.test = xtest)
+yhat.bart = bartfit$yhat.test.mean
+bart_testMSE = mean((ytest - yhat.bart)^2)
+bart_testMSE
+```
+
+Test MSE for BART is **1.306** which is much lower than what we have seen in *Regression tree*, *Bagging* and *Random forest* methods.
+
+```{r echo=FALSE}
+ord = order(bartfit$varcount.mean, decreasing = T)
+bartfit$varcount.mean[ord]
+```
+
+We can see here as well that *Price*, *CompPrice* and *Sheleloc* variables are occuring in maximum number of trees.
+
+# Ch 8 Prob 11
+
+## Part a
+
+```{r echo=FALSE}
+library(gbm)
+library(ISLR2)
+df = Caravan
+df$Purchase = ifelse(df$Purchase=="Yes",1,0)
+Caravan.train = df[c(1:1000),]
+Caravan.test = df[c(1001:nrow(Caravan)),]
+dim(Caravan)
+```
+
+Caravan dataset has 5822 rows and 86 columns. 85 of the columns are going to be used to predict the 86th column *Purchase*. This is a classification prediction.
+
+```{r echo=FALSE}
+nrow(Caravan.train)
+nrow(Caravan.test)
+```
+
+The Caravan dataset has been divided into training data with the first 1000 rows and the remaining data as the testing data set.
+
+## Part b
+
+```{r echo=FALSE}
+set.seed(1)
+boost.Caravan = gbm(Purchase ~ .,data = Caravan.train, distribution = 'gaussian',n.trees = 1000, shrinkage = 0.01)
+summary(boost.Caravan)
+```
+
+The variables *PPERSAUT*, *MKOOPKLA*,*MOPLHOOG* and *MBERMIDD* appear to be the most important predictors.
+
+## Part c
+
+```{r echo=FALSE}
+set.seed(1)
+yhat.boost = predict(boost.Caravan, newdata = Caravan.test, n.trees = 1000)
+prediction = ifelse(yhat.boost > 0.2 ,1 ,0)
+table(prediction,Caravan.test$Purchase)
+```
+
+**11** purchases out of **51** of the predicted purchases have actually been predicted correctly i.e., **0.216** parts of the predicted purchases.
+
+```{r echo=FALSE}
+library(kknn)
+set.seed(1)
+for (i in 3:25){
+knn.Caravan = kknn(Purchase~.,Caravan.train,Caravan.test,k=i,kernel = "rectangular")
+prediction.knn = ifelse(knn.Caravan$fitted.values > 0.2 ,1 ,0)
+cat("K = ",i)
+print(table(prediction.knn,Caravan.test$Purchase))
+f = which(Caravan.test$Purchase == 1)
+g = which(prediction.knn == 1)
+h = intersect(f,g)
+cat("Ratio of correctly predicted purchases by predicted purchases:",length(h)/length(g),"\n")
+}
+```
+
+*KNN* has been used to compare the result from boosting. KNN has been run with multiple k values from 3 to 25. At *k = 21* we get the best prediction. We get a ratio of **0.2** which is close to the the ratio of **0.216** from *Boosting*.
+
+# Ch 10 Prob 7
+
+```{r echo=FALSE}
+library(ISLR2)
+library(keras)
+data_nn = Default
+data_nn$default = ifelse(data_nn$default=="Yes",1,0)
+data_nn$student = ifelse(data_nn$student=="Yes",1,0)
+n = nrow(data_nn)
+set.seed(12)
+testid = sample(1:n,round(n/4))
+train = c(1:n)[-testid]
+glm.fit = glm(default ~ ., data = data_nn, family = binomial, subset = train)
+glm.probs = predict(glm.fit, data_nn[testid,], type = "response")
+glm.probs[glm.probs >= .5] = 1
+glm.probs[glm.probs < .5] = 0
+print("Results of Linear Logistic Regression:\n")
+table(glm.probs,data_nn$default[testid])
+mean(glm.probs == data_nn$default[testid])
+mean(glm.probs != data_nn$default[testid])
+
+x = model.matrix(default ~ .-1, data = data_nn) %>% scale()
+y = data_nn$default
+modnn = keras_model_sequential() %>%
+  layer_dense(units = 10, activation = "relu",
+              input_shape = ncol(x)) %>%
+  layer_dropout(rate = 0.1) %>% 
+  layer_dense(units = 1, activation = "sigmoid")
+
+summary(modnn)
+modnn %>% compile(loss = "binary_crossentropy", optimizer = "adam", metrics = c("accuracy"))
+
+
+history = modnn %>% fit(x[-testid, ], y[-testid], epochs = 150, batch_size = 100, 
+                         validation_split = 0.2)
+
+
+plot(history , main = "Single Layer Neural Network loss and accuracy")
+
+prediction = modnn %>% predict(x[testid,], batch_size = 100)
+y_pred_nn = round(prediction)
+
+confusion_matrix = table(y_pred_nn, y[testid])
+print("Results of Single Layer Neural Network:\n")
+confusion_matrix
+mean(y_pred_nn == data_nn$default[testid])
+mean(y_pred_nn != data_nn$default[testid])
+```
+
+I divided the dataset into training and test where training data has 7500 rows and test has 2500 rows. The *default* column has been changed from *yes/no* to **1/0** respectively. Same has been done for the *student* column as well. I built the linear logistic regression model first and then built the single layer neural network model. We are getting similar results in both the models.
+
+
+**Please create a Data folder and keep the BeautyData.csv and MidCity.csv datasets in that folder for easy reproducibility**
+
+# Custom Problem 1
+
+## Part a
+
+```{r echo=FALSE}
+beauty_data = read.csv("Data/BeautyData.csv")
+#df = as.data.frame(df)
+print(cor(beauty_data))
+for (i in 3:length(colnames(beauty_data))){ 
+beauty_data[,i] = as.factor(beauty_data[,i])
+}
+
+for (i in 2:length(colnames(beauty_data))){  
+  plot(beauty_data[,i],beauty_data$CourseEvals,xlab = colnames(beauty_data)[i],ylab = 'CourseEvals')
+}
+
+```
+
+The X variables have been plotted with the Y variable (CourseEval) in the form of scatterplots or boxplots depending on the type of X variable in terms of it being a numerical variable or a categorical variable. In the scatterplot between *CourseEvals* and *BeautyScore*, we observe that there is a positive correlation i.e., as *BeautyScore* increases, *CourseEvals* increases. We also calculated the correlation between all the variables and we can observe that *BeautyScore*, *female* and *lower* are highly correlated to *CourseEvals*. After getting the correlation matrix I converted the *female*, *lower*, *nonenglish* and *tenuretrack* to categorical variables. For further analysis I chose *bagging* and *random forests* as they are good at dealing with categorical x variables.
+
+```{r echo=FALSE}
+library(randomForest)
+set.seed(11)
+train = sample(1:nrow(beauty_data),round(nrow(beauty_data)/2))
+beauty_data.test = beauty_data[-train,]
+CourseEvals.test = beauty_data$CourseEvals[-train]
+bag.beauty_data = randomForest(CourseEvals ~ BeautyScore, data = beauty_data, subset = train, importance = TRUE)
+print(bag.beauty_data)
+bag_beauty.predict = predict(bag.beauty_data,beauty_data.test)
+bag_RMSE = sqrt(mean((bag_beauty.predict - CourseEvals.test)^2))
+bag_RMSE
+importance(bag.beauty_data)
+```
+
+Initially, bagging has been done on training data with only BeautyScore as x variable to see what test RMSE we get and how much variance is explained. We get a test RMSE of **0.5064** and **19.53%** of variance is explained. Next we will include all x variables and see what result we get.
+
+```{r echo=FALSE}
+library(randomForest)
+set.seed(11)
+bag.beauty_data2 = randomForest(CourseEvals ~ ., data = beauty_data, subset = train, mtry = 5, importance = TRUE)
+print(bag.beauty_data2)
+bag_beauty.predict2 = predict(bag.beauty_data2,beauty_data.test)
+bag_RMSE2 = sqrt(mean((bag_beauty.predict2 - CourseEvals.test)^2))
+bag_RMSE2
+print(importance(bag.beauty_data2))
+varImpPlot(bag.beauty_data2)
+
+```
+
+When all the x variables are included in training the bagging model we see that the % variance explained is **25.29%** and the test RMSE reduced to **0.4924**. It is not much of a reduction but to check I have used *importance()* and *varImpPlot()* functions to see how important each variable is. We see that along with *BeautyScores*, *lower* and *female* variables are important too in predicting *CourseEvals*.
+
+```{r echo=FALSE}
+library(randomForest)
+set.seed(11)
+rf.beauty_data = randomForest(CourseEvals ~ ., data = beauty_data, subset = train, mtry = 3, importance = TRUE)
+print(rf.beauty_data)
+rf_beauty.predict = predict(rf.beauty_data,beauty_data.test)
+rf_RMSE = sqrt(mean((rf_beauty.predict - CourseEvals.test)^2))
+rf_RMSE
+print(importance(rf.beauty_data))
+varImpPlot(rf.beauty_data)
+```
+
+In random forest model I have selected mtry as 3 and got a test RMSE of **0.4647** which is an improvement compared to bagging. I have again used the importance function to see which x variables are important and got similar result as that in bagging. Hence, we can conclude that while *beauty* has an effect on Course evaluation scores, there are are other determinants which also affect the scores and their effect is not negligible.
+
+## Part b
+
+According to Dr.Hamermesh's comment it is in fact difficult to say whether the Course evaluation scores are representing productivity as they are meant to or discrimination as those who are beautiful get higher scores which is against who are not beautiful. If Beauty had a very huge impact on course evals this would have been reflected in the importance functions we used above. But we found out that there are other determinants as well which have comparable effects. Hence, we cannot confirm if the Course evals are productive or discriminative.
+
+# Custom Problem 2
+
+```{r echo=FALSE}
+house_data = read.csv("Data/MidCity.csv")
+house_data = house_data[,-1]
+house_data[,4] = ifelse(house_data[,4] == 'Yes',1,0)
+print(cor(house_data))
+```
+
+The house data has been imported and the *Brick* column has been modified from text to numerical column inorder to make the analysis smooth. In the *Brick* column if the house is made of bricks it will have **1** or else **0**. After that, since all are numerical columns, a correlation matrix has been created to initially understand the relationships between multiple columns in the data. From the correlation matrix, we can see that *Price* has a positive correlation with *neighbourhood*, *Squarefeet*, *Brick*, *no.of bedrooms* and *bathrooms* but a negative correlation with *offers*. I will go with multiple linear regression and see what coefficients will be given to each of the x variables.
+
+```{r echo=FALSE}
+lm_house_data = lm(Price ~ ., data = house_data)
+summary(lm_house_data)
+```
+
+Based in the coefficients of the x variables in linear model we can say that: - There is a premium for the brick houses with everything else being equal - There is a premium for houses in neighbourhood 3
+
+```{r echo=FALSE}
+lm_house_data_interaction = lm(Price ~ . + Nbhd:Brick, data = house_data)
+summary(lm_house_data_interaction)
+```
+
+-   The positive coefficient for the interaction term between *Nbhd* and *Brick* indicates that there is an extra premium for the brick houses in neighbourhood 3.
+
+For the next problem, the *Nbhd* column is modified a bit. The neighbourhoods 1 and 2 are combined to be 1 (older neighbourhood) and neighbourhood 3 is made 2 (new neighbourhood).
+
+```{r echo=FALSE}
+house_newdata = house_data
+house_newdata[,1] = ifelse(house_newdata[,1] == 3,2,1)
+lm_house_data_Nbhd = lm(Price ~ . , data = house_newdata)
+summary(lm_house_data_Nbhd)
+```
+
+Neighbourhood got a bigger coefficient value and also the F-statistic and R square values have increased which makes the step of combining neighbourhoods 1 and 2 a valid step.
+
+# Custom Problem 3
+
+## Q1
+
+Just studying the correlation between police strength and crime rate is not sufficient. If the crime rate is going down when the police strength is up it does not necessarily mean that the crime rate has gone down because the police strength has gone up. It could be the case that there is an emergency in the city which is causing more police officers to be deployed on the streets and also, since it is an emergency people might not prefer to come out. Since there are less people on the streets, there are less victims to street crime and hence lower crime rate. \## Q2 The Researchers at UPENN were added another variable to their model of estimating crime rate. They added Metro ridership which is acting as a measure of the population on the streets. By adding it their model actually improved which is shown in their R square value which increased from **0.14** to **0.17**. Also the magnitude of the coefficient of *High Alert* variable also reduced which signifies that the crime rate is not just affected by the police numbers but also by the number of common people on the streets.
+
+## Q3
+
+They had to control for METRO ridership because they realised that without common people on the street there can be no street crime. They needed some variable representing the amount of people on the street and METRO ridership seemed to be the best indicator. The METRO ridership is trying to capture the number of common people who are on the streets.
+
+## Q4
+
+The model is estimating the effect of number of cops in a particular district i.e., *District 1*. Given that the number of cops in other districts and METRO ridership, the effect on the crime rate by the number of cops in District 1 is higher compared to other districts. The conclusion is that in District 1 there is more crime and more police need to be placed there compared to other districts in order to reduce crime rate.
+
+# Final Project Contribution
+
+When we were first assigned into our groups, I was honestly a little nervous about how to start the project or even how to approach my teammates. But after the initial introductions we started discussing about ideas for the project and what problem to choose. So, we decided that each individual should come up with a problem statement, find a relevant data set and then once we discuss among each other finalize our problem statement. I researched a bit and found a data set which was used to predict heart attacks and was collected from hospitals. I proposed this to the team but due to the data size we didn't go with that. Instead, we decided to analyze Austin housing market data. Now, coming to the next steps I contributed to the exploratory data analysis where I plotted scatter plots for some of the important predictors in the data and created a correlation matrix which helped in narrowing down the predictors we want to consider in our analysis. After that, I worked with Ryan and Samarth in streamlining theirs codes for Regression tree analysis, bagging, random forests and K-nearest neighbors models. As a team we decided on the order in which we needed to present the results of our models. Since, different people were doing different models, at the end we had to spend some time on combining all the codes and manage variable names in the code in order to maintain a process. I assissted in combining all the codes and making sure that the final code is reproducible.  
